@@ -25,7 +25,7 @@ SECRET_KEY = 'xilzm=1#gwy-8!gvxlih397ziu!zpfex#^-wgxdn7981caqty='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['kholmumin-task1.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['kholmumin-task1.herokuapp.com', '127.0.0.1', '*']
 
 # Application definition
 

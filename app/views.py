@@ -1,7 +1,9 @@
 import json
+
 import telebot
 from django.conf import settings
 from django.http.response import HttpResponse
+
 from app.models import TgUser, History
 
 # @usingjsonbot
@@ -39,14 +41,12 @@ def start(message):
                    'command'])
 def json_message(message):
     user_id = message.from_user.id
-    data = {'message': message.json,
-            'update_id': History.objects.all().count()}
-    data = json.dumps(data, sort_keys=True, indent=2)
+    data = json.dumps({'update_id': bot.last_update_id,
+                       'message': message.json}, indent=1)
     text = '`' + data + '`'
     TgUser.objects.filter(user_id=user_id).update(first_name=message.from_user.first_name,
                                                   last_name=message.from_user.last_name,
                                                   username=message.from_user.username)
     tg_user = TgUser.objects.filter(user_id=user_id).first()
-    history = History(tg_user=tg_user, text=str(data))
-    history.save()
+    History(tg_user=tg_user, text=str(data)).save()
     bot.send_message(message.from_user.id, text, parse_mode='MARKDOWN')

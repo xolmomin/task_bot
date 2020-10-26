@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'xilzm=1#gwy-8!gvxlih397ziu!zpfex#^-wgxdn7981caqty='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['kholmumin-task1.herokuapp.com', '*']
+ALLOWED_HOSTS = ['kholmumin-task1.herokuapp.com']
 
 # Application definition
 

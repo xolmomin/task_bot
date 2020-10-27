@@ -38,15 +38,29 @@ def start(message):
 
 @bot.message_handler(
     content_types=['document', 'audio', 'photo', 'text', 'sticker', 'video', 'video_note', 'voice', 'location',
-                   'command'])
+                   'contact', 'new_chat_members', 'left_chat_member', 'new_chat_title', 'new_chat_photo',
+                   'delete_chat_photo', 'group_chat_created', 'supergroup_chat_created', 'channel_chat_created',
+                   'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message'])
 def json_message(message):
     user_id = message.from_user.id
+    if TgUser.objects.filter(user_id=user_id).exists():
+        TgUser.objects.filter(user_id=user_id).update(first_name=message.from_user.first_name,
+                                                      last_name=message.from_user.last_name,
+                                                      username=message.from_user.username)
+    else:
+        TgUser.objects.create(user_id=user_id, first_name=message.from_user.first_name,
+                              last_name=message.from_user.last_name, username=message.from_user.username)
+
     data = json.dumps({'update_id': bot.last_update_id,
                        'message': message.json}, indent=1)
     text = '`' + data + '`'
-    TgUser.objects.filter(user_id=user_id).update(first_name=message.from_user.first_name,
-                                                  last_name=message.from_user.last_name,
-                                                  username=message.from_user.username)
     tg_user = TgUser.objects.filter(user_id=user_id).first()
     History(tg_user=tg_user, text=str(data)).save()
-    bot.send_message(message.from_user.id, text, parse_mode='MARKDOWN')
+    if message.chat.type == "private":
+        bot.send_message(message.from_user.id, text, parse_mode='MARKDOWN')
+
+    if message.chat.type == "group":
+        bot.send_message(message.chat.id, text, parse_mode='MARKDOWN')
+
+    if message.chat.type == "supergroup":
+        bot.send_message(message.chat.id, text, parse_mode='MARKDOWN')
